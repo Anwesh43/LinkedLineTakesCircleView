@@ -220,4 +220,13 @@ class LineTakesCircleView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity: Activity) : LineTakesCircleView {
+            val view : LineTakesCircleView = LineTakesCircleView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }

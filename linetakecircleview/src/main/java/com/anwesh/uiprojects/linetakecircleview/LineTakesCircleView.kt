@@ -197,4 +197,26 @@ class LineTakesCircleView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : LineTakesCircleView) {
+
+        private val animator : Animator = Animator(view)
+        private val ltc : LineTakeCircle = LineTakeCircle(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            ltc.draw(canvas, paint)
+            animator.animate {
+                ltc.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            ltc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }

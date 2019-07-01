@@ -21,6 +21,7 @@ val backColor : Int = Color.parseColor("#BDBDBD")
 val deg : Float = 90f
 val rFactor : Float = 3f
 val rotParts : Int = 2
+val delay : Long = 30
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -37,7 +38,7 @@ fun Canvas.drawLineCircle(sc : Float, size : Float, rot : Float, paint : Paint) 
     rotate(rot)
     drawCircle(size, 0f, size / rFactor, paint)
     save()
-    rotate(deg * sc.divideScale(1, rotParts))
+    rotate(deg * sc.divideScale(0, rotParts))
     drawLine(0f, 0f, 0f, -size, paint)
     restore()
     restore()
@@ -58,8 +59,8 @@ fun Canvas.drawLTCNode(i : Int, scale : Float, paint : Paint) {
     translate(w / 2, gap * (i + 1))
     rotate(deg * 2 * sc2)
     for (j in 0..(lines - 1)) {
-        val sc : Float = sc1.divideScale(0, rotParts)
-        rot += deg * sc
+        val sc : Float = sc1.divideScale(j, lines)
+        rot += deg * sc.divideScale(1, rotParts)
         drawLineCircle(sc, size, rot, paint)
     }
     restore()
@@ -109,7 +110,7 @@ class LineTakesCircleView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 

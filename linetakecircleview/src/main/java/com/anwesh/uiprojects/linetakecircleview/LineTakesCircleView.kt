@@ -22,6 +22,11 @@ val deg : Float = 90f
 val rFactor : Float = 3f
 val rotParts : Int = 2
 val delay : Long = 30
+val circleFactor : Float = 0.5f
+val startDeg : Float = -90f
+val endDeg : Float = 360f
+val circleXFactor : Float = 0.4f
+val parts : Int = 2
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -33,7 +38,23 @@ fun Float.mirrorValue(a : Int, b : Int) : Float {
 }
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
 
+fun Canvas.drawProgressCircle(i : Int, w : Float, scale : Float, size : Float, paint : Paint) {
+    paint.style = Paint.Style.STROKE
+    val r : Float = circleFactor * size
+    save()
+    translate(circleXFactor * w * (1 - 2 * i), 0f)
+    drawArc(RectF(-r, -r, r, r), startDeg, endDeg * scale.divideScale(i, parts), false, paint)
+    restore()
+}
+
+fun Canvas.drawProgressCircles(w : Float, scale : Float, size : Float, paint : Paint) {
+    for (j in 0..(parts - 1)) {
+        drawProgressCircle(j, w, scale, size, paint)
+    }
+}
+
 fun Canvas.drawLineCircle(sc : Float, size : Float, rot : Float, paint : Paint) {
+    paint.style = Paint.Style.FILL
     save()
     rotate(rot)
     drawCircle(size, 0f, size / rFactor, paint)
@@ -57,6 +78,7 @@ fun Canvas.drawLTCNode(i : Int, scale : Float, paint : Paint) {
     paint.strokeWidth = Math.min(w, h) / strokeFactor
     save()
     translate(w / 2, gap * (i + 1))
+    drawProgressCircles(w, scale, size, paint)
     rotate(deg * 2 * sc2)
     for (j in 0..(lines - 1)) {
         val sc : Float = sc1.divideScale(j, lines)
